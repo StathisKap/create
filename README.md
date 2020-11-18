@@ -1,6 +1,5 @@
 # create
-# Program that creates a folder, a git repo, a readme file, and a C file with the name that you pass it, in a given path
-
+Program that creates a folder, a git repo, a readme file, and a C file with the name that you pass it, in a given path
 
 There is a variable named path, so if you wanna use this command, first change the path to whatever you want,
 and then add the command to the PATH of your computer.
