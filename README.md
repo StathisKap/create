@@ -1,4 +1,4 @@
-#create
+# create
 Program that creates a folder, a git repo, a readme file, and a C file with the name that you pass it, in a given path
 
 
