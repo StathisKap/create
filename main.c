@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <stdbool.h>
 
 void main(int argc, char *argv[])
 {
@@ -60,6 +61,7 @@ void main(int argc, char *argv[])
     //initialize a git repository in the project path and don't use the system function,
     //use an exec function to run the git command
     //if the git command fails, exit
+
     char *git = malloc(strlen(path) + 5);
     strcpy(git, path);
     //create a new process to run the git command
@@ -92,6 +94,8 @@ void main(int argc, char *argv[])
     //create a README.md file in the project path with a heading that contains the name of the project
     //if the file exists, exit
     char *readme = malloc(strlen(path) + strlen("/README.md") + 1);
+    bool description_exists = false;
+    char *description = malloc(1080);
     strcpy(readme, path);
     strcat(readme, "/README.md");
     if(access(readme, F_OK) != -1)
@@ -99,22 +103,24 @@ void main(int argc, char *argv[])
         printf("File already exists\n");
         exit(1);
     }
-    FILE *read = fopen(readme, "w");
-    fprintf(read, "# %s\n", dirname);
-    //if the user has provided the flag -r then the string after as the description in the readme file
+    FILE *readme_file = fopen(readme, "w");
+    fprintf(readme_file, "# %s\n", dirname);
+    //if the user has provided the flag -r then the string after as the description in the readme_file file
     char ch;
     while ((ch = getopt(argc, argv, "r:")) != EOF)
     {
         switch (ch)
         {
             case 'r':
-                fprintf(read, "%s\n", optarg);
+                fprintf(readme_file, "%s\n", optarg);
+                strcpy(description, optarg);
+                description_exists = true;
                 break;
             default:
                 break;
         }
     }
-    fclose(read);
+    fclose(readme_file);
 
     //Open up the project directory using vscode
     //don't use the system function, use an exec function to run the code command
@@ -130,9 +136,70 @@ void main(int argc, char *argv[])
         }
     }
 
-
     //we will then print both
     printf("%s\n", dirname);
     printf("%s\n", path);
 
+    //run a python script and create a pipe to capture the output from the python script stdout
+    //create a new process to run the python script
+    pid = fork();
+    if(pid == 0)
+    {
+        //child process
+        //create a pipe to capture the output from the python script stdout
+        int fd[2];
+        pipe(fd);
+        //create a new process to run the python script
+        pid_t pid = fork();
+        if(pid == 0)
+        {
+            //child process
+            //close the read end of the pipe
+            close(fd[0]);
+            //dup the write end of the pipe to stdout
+            dup2(fd[1], STDOUT_FILENO);
+            //run the python script
+            if (description_exists)
+                execlp("python3", "python3", "github_new_repo.py",dirname, description, NULL);
+            else
+                execlp("python3", "python3", "github_new_repo.py",dirname, NULL);
+        }
+        //parent process
+        //close the write end of the pipe
+        close(fd[1]);
+        //read the output from the python script
+        char buf[1024];
+        char remote[255];
+        while(read(fd[0], buf, 1024) > 0)
+        {
+            if (strstr(buf, "https://github.com/") != NULL)
+            {
+                strcpy(remote, buf);
+                pid = fork();
+                if(pid == 0)
+                {
+                    //child process
+                    if(execlp("git", "git", "-C", path, "remote", "add", "origin", remote, NULL))
+                    {
+                        printf("Git command failed\n");
+                        exit(1);
+                    }
+                    printf("Git remote command succeded\n");
+                }
+            }
+            break;
+        }
+        //create a process and run a git remote add command using an exec function
+    }
+
+
+    //free memory
+    free(path);
+    free(dirname);
+    free(description);
+    free(filename);
+    free(makefile);
+    free(gitingore);
+    free(readme);
+    free(git);
 }
