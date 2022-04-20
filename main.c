@@ -54,7 +54,6 @@ void main(int argc, char *argv[])
 
 
     //create a makefile in the directory and add a rule to compile the source file
-    //create a makefile in the directory, if the file exists, exit
     char *makefile = malloc(strlen(path) + strlen("Makefile") + 1);
     strcpy(makefile, path);
     strcat(makefile, "/Makefile");
@@ -68,13 +67,11 @@ void main(int argc, char *argv[])
     fprintf(make, "CC=gcc\n\n%s: %s.c\n\t$(CC) $^ -o $@\n", project_dirname, project_dirname);
     fclose(make);
 
-
-    //initialize a git repository in the project path and don't use the system function,
-    //use an exec function to run the git command
+    //initialize a git repository in the project path
     //if the git command fails, exit
-
     char *git = malloc(strlen(path) + 5);
     strcpy(git, path);
+
     //create a new process to run the git command
     pid_t pid = fork();
     if(pid == 0)
@@ -116,6 +113,7 @@ void main(int argc, char *argv[])
     }
     FILE *readme_file = fopen(readme, "w");
     fprintf(readme_file, "# %s\n", project_dirname);
+    
     //if the user has provided the flag -r then the string after as the description in the readme_file file
     char ch;
     while ((ch = getopt(argc, argv, "r:")) != EOF)
@@ -134,8 +132,6 @@ void main(int argc, char *argv[])
     fclose(readme_file);
 
     //Open up the project directory using vscode
-    //don't use the system function, use an exec function to run the code command
-    //create a new process to run the code command
     pid = fork();
     if(pid == 0)
     {
@@ -205,7 +201,6 @@ void main(int argc, char *argv[])
         }
         //create a process and run a git remote add command using an exec function
     }
-
 
     //free memory
     free(path);
