@@ -4,9 +4,20 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <stdbool.h>
+#include <libgen.h>
 
 void main(int argc, char *argv[])
 {
+    //get the directory where the binary is located -- only works on Linux
+    char buffer[BUFSIZ];
+    if (readlink("/proc/self/exe", buffer, BUFSIZ) == -1)
+    {
+        printf("Error: could not get the path of the binary\n");
+        printf("Python Script won't run. Won't create github repo\n");
+    }
+    else
+        printf("The path of the binary is: %s\n", buffer);
+
     //User will provide 1 argument
     //If they do not provide 1 argument, exit
     if(argc < 2)
@@ -17,7 +28,7 @@ void main(int argc, char *argv[])
 
     //the argument will be the name of a directory
     char *path = argv[1];
-    char *dirname = strrchr(path, '/') + 1;
+    char *project_dirname = strrchr(path, '/') + 1;
 
     //create the directory if it doesn't already exist
     //if the directory already exists, exit
@@ -28,10 +39,10 @@ void main(int argc, char *argv[])
     }
 
     //create a C source file with the name of the direname and the .c extension in the directory, if the file exists, exit
-    char *filename = malloc(strlen(path) + strlen(dirname) + 4);
+    char *filename = malloc(strlen(path) + strlen(project_dirname) + 4);
     strcpy(filename, path);
     strcat(filename, "/");
-    strcat(filename, dirname);
+    strcat(filename, project_dirname);
     strcat(filename, ".c");
     if(access(filename, F_OK) != -1)
     {
@@ -54,7 +65,7 @@ void main(int argc, char *argv[])
         exit(1);
     }
     FILE *make = fopen(makefile, "w");
-    fprintf(make, "CC=gcc\n\n%s: %s.c\n\t$(CC) $^ -o $@\n", dirname, dirname);
+    fprintf(make, "CC=gcc\n\n%s: %s.c\n\t$(CC) $^ -o $@\n", project_dirname, project_dirname);
     fclose(make);
 
 
@@ -104,7 +115,7 @@ void main(int argc, char *argv[])
         exit(1);
     }
     FILE *readme_file = fopen(readme, "w");
-    fprintf(readme_file, "# %s\n", dirname);
+    fprintf(readme_file, "# %s\n", project_dirname);
     //if the user has provided the flag -r then the string after as the description in the readme_file file
     char ch;
     while ((ch = getopt(argc, argv, "r:")) != EOF)
@@ -137,11 +148,15 @@ void main(int argc, char *argv[])
     }
 
     //we will then print both
-    printf("%s\n", dirname);
+    printf("%s\n", project_dirname);
     printf("%s\n", path);
 
     //run a python script and create a pipe to capture the output from the python script stdout
     //create a new process to run the python script
+    char *python_script_name_and_path = malloc(strlen(buffer) + strlen("/github_new_repo.py") + 1);
+    strcpy(python_script_name_and_path, dirname(buffer));
+    strcat(python_script_name_and_path, "/github_new_repo.py");
+
     pid = fork();
     if(pid == 0)
     {
@@ -160,9 +175,9 @@ void main(int argc, char *argv[])
             dup2(fd[1], STDOUT_FILENO);
             //run the python script
             if (description_exists)
-                execlp("python3", "python3", "github_new_repo.py",dirname, description, NULL);
+                execlp("python3", "python3", python_script_name_and_path, project_dirname, description, NULL);
             else
-                execlp("python3", "python3", "github_new_repo.py",dirname, NULL);
+                execlp("python3", "python3", python_script_name_and_path, project_dirname, NULL);
         }
         //parent process
         //close the write end of the pipe
@@ -184,7 +199,6 @@ void main(int argc, char *argv[])
                         printf("Git command failed\n");
                         exit(1);
                     }
-                    printf("Git remote command succeded\n");
                 }
             }
             break;
@@ -195,7 +209,7 @@ void main(int argc, char *argv[])
 
     //free memory
     free(path);
-    free(dirname);
+    free(project_dirname);
     free(description);
     free(filename);
     free(makefile);
