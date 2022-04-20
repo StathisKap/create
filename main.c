@@ -8,9 +8,9 @@ void main(int argc, char *argv[])
 {
     //User will provide 1 argument
     //If they do not provide 1 argument, exit
-    if(argc != 2)
+    if(argc < 2)
     {
-        printf("Usage: ./create <project path and name>\n");
+        printf("Usage: ./create project_path_and_name [-r ReadMe Description] \n");
         exit(1);
     }
 
@@ -101,6 +101,19 @@ void main(int argc, char *argv[])
     }
     FILE *read = fopen(readme, "w");
     fprintf(read, "# %s\n", dirname);
+    //if the user has provided the flag -r then the string after as the description in the readme file
+    char ch;
+    while ((ch = getopt(argc, argv, "r:")) != EOF)
+    {
+        switch (ch)
+        {
+            case 'r':
+                fprintf(read, "%s\n", optarg);
+                break;
+            default:
+                break;
+        }
+    }
     fclose(read);
 
     //Open up the project directory using vscode
