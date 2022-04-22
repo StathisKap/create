@@ -15,6 +15,6 @@ void Create_Source_File(char * path, char * project_dirname)
 
     FILE *file = fopen(filename, "w");
     fclose(file);
-    printf("File created: %s\n", filename);
+    printf("Source file created: %s\n", filename);
     free(filename);
 }

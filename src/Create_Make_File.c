@@ -17,5 +17,6 @@ void Create_Make_File(char * path, char * project_dirname){
     FILE *make = fopen(makefile, "w");
     fprintf(make, "CC=gcc\n\n%s: %s.c\n\t$(CC) $^ -o $@\n", project_dirname, project_dirname);
     fclose(make);
+    printf("MakeFile Created\n");
     free(makefile);
 }
