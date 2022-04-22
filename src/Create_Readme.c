@@ -13,12 +13,14 @@ void Create_Readme(char *path, char *project_dirname, char * description){
     sprintf(readme,"%s/README.md",path);
     if(access(readme, F_OK) != -1)
         error("README.md File already exists\n", 8);
+
     FILE *readme_file = fopen(readme, "w");
     fprintf(readme_file, "# %s\n", project_dirname);
+
     if (description_exists)
         fprintf(readme_file, "%s\n", description);
-    printf("README.md file created. Title of project: %s\n", project_dirname);
-    
+    printf("README.md file created\n. Title of project: %s\n", project_dirname);
+
     fclose(readme_file);
     free(readme);
 }

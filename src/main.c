@@ -57,8 +57,6 @@ int main(int argc, char *argv[])
     Run_Python_Script(path, project_dirname, description); // run a python script and add git remote
     
     //free memory
-    free(path);
-    free(project_dirname);
     if (description_exists)
         free(description);
     return 0;
