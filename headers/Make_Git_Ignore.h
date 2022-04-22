@@ -1,0 +1,1 @@
+void Make_Git_Ignore(char * path);

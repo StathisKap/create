@@ -4,7 +4,7 @@ import sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+#from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
@@ -18,7 +18,7 @@ chrome_options.add_experimental_option("detach", True) #detach the browser from 
 chrome_options.add_argument("--log-level=3") #silence the browser
 #browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
-browser = webdriver.Chrome("/mnt/c/Users/Stathis Kapnidis/Downloads/chromedriver.exe", options=chrome_options)
+browser = webdriver.Chrome("/Users/stathis/Downloads/chromedriver", options=chrome_options)
 browser.get('https://github.com/login')
 
 #if the user is not logged in, login

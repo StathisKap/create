@@ -1,0 +1,1 @@
+void error(char * Error_Message, int Exit_Code);
