@@ -74,7 +74,6 @@ void Run_Python_Script(char * path, char * project_dirname, char * description)
                     break;
                 }
             }
-            free(python_script_name_and_path);
         }
         else
             printf("Python script is not on the current working directory\n");

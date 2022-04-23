@@ -8,7 +8,11 @@ void Launch_VScode(char * path)
 {
     pid_t pid = fork();
     if(pid == 0)
+    {
+        //child process
         if(execlp("code", "code", path, NULL))
             error("Launching Code failed\n", 6);
+    }
     printf("Launched VCode\n");
+ 
 }

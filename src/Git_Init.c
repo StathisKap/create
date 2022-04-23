@@ -9,9 +9,16 @@
 
 void Git_Init(char * path)
 {
+    char *git = malloc(strlen(path) + 5);
+    strcpy(git, path);
+
     //create a new process to run the git command
     pid_t pid = fork();
     if(pid == 0)
+    {
+        //child process
         if(execlp("git", "git", "init", path, NULL))
             error("Git command failed\n", 5);
+    }
+    free(git);
 }
