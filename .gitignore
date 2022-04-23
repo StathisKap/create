@@ -3,3 +3,4 @@ bin/create
 bin/secrets.py
 .vscode
 objects/
+.gitattributes
