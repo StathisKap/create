@@ -1,5 +1,4 @@
 __pycache__/
 bin/create
-bin/secrets.py
 .vscode
 objects/
