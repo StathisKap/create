@@ -1,1 +1,1 @@
-bin/secrets.py filter=git-crypt diff=git-crypt
+#bin/secrets.py filter=git-crypt diff=git-crypt
