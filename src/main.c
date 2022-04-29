@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
                 break;
         }
     }
- 
+
     //the argument will be the name of a directory
     char *path = argv[optind];
     char *project_dirname = strrchr(path, '/') + 1;
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     Make_Git_Ignore(path); // create a .gitingore file in the project path. if the file exists, exit
     Create_Readme(path, project_dirname, description); // create a README.md file in the project path with a heading that contains the name of the project
     Run_Python_Script(path, project_dirname, description); // run a python script and add git remote
-    
+
     //free memory
     if (description_exists)
         free(description);
