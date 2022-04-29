@@ -15,7 +15,6 @@ from secrets import GitHub_Username, GitHub_Password
 if GitHub_Username == "Enter your Github username" or GitHub_Password == "Enter your GitHub password":
     print("Please enter your GitHub username and password in secrets.py")
     sys.exit()
- 
 
 #open up a new browser window and go to https://github.com/login
 chrome_options = Options()  # create a new chrome options object
