@@ -51,17 +51,17 @@ void Run_Python_Script(char * path, char * project_dirname, char * description)
             {
                 //child process
                 //create a pipe to capture the output from the python script stdout
-                int fd[2];
-                pipe(fd);
+//                int fd[2];
+//                pipe(fd);
                 //create a new process to run the python script
                 pid_t pid = fork();
                 if(pid == 0)
                 {
                     //child process
                     //close the read end of the pipe
-                    close(fd[0]);
+//                    close(fd[0]);
                     //dup the write end of the pipe to stdout
-                    dup2(fd[1], STDOUT_FILENO);
+//                    dup2(fd[1], STDOUT_FILENO);
                     //run the python script
                     if (description_exists)
                         execlp("python3", "python3", python_script_name_and_path, project_dirname, description, NULL);
@@ -70,12 +70,12 @@ void Run_Python_Script(char * path, char * project_dirname, char * description)
                 }
                 //parent process
                 //close the write end of the pipe
-                close(fd[1]);
+//                close(fd[1]);
                 //read the output from the python script
                 char buf[1024];
                 char remote[255];
-                while(read(fd[0], buf, 1024) > 0)
-                {
+//                while(read(fd[0], buf, 1024) > 0)
+//                {
                     if (strstr(buf, "https://github.com/") != NULL)
                     {
                         strcpy(remote, buf);
@@ -84,8 +84,8 @@ void Run_Python_Script(char * path, char * project_dirname, char * description)
                             if(execlp("git", "git", "-C", path, "remote", "add", "origin", remote, NULL))
                                 error("git remote add command failed\n", 10);
                     }
-                    break;
-                }
+//                    break;
+//                }
             }
         }
 #endif
