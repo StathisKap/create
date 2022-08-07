@@ -58,7 +58,6 @@ if len(sys.argv) == 1:
 elif len(sys.argv) == 2:
     #Enter the repo name
     enter_text(name = sys.argv[1], xpath_value ='//*[@id="repository_name"]')
-    #wait for 3 seconds
     create_new_repo()
 
 elif len(sys.argv) == 3:

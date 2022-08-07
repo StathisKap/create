@@ -14,6 +14,8 @@ void Make_Git_Ignore(char * path)
         error(".gitignore file already exists\n", 4);
     
     FILE *ignore = fopen(gitingore, "w");
+    fwrite("\n.DS_Store\n", sizeof(char), 10, ignore);
+    fwrite("\n.vscode/\n", sizeof(char), 10, ignore);
     fclose(ignore);
     free(gitingore);
 }

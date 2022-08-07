@@ -4,3 +4,4 @@ bin/secrets.py
 .vscode
 objects/
 .gitattributes
+.env/
